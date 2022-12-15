@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.nanqiao.dao.OrdersDao">
+
+    <resultMap type="com.qf.nanqiao.entity.Orders" id="OrdersMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="uid" column="uid" jdbcType="INTEGER"/>
+        <result property="totalMoney" column="total_money" jdbcType="NUMERIC"/>
+        <result property="payType" column="pay_type" jdbcType="INTEGER"/>
+        <result property="flag" column="flag" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="no" column="no" jdbcType="VARCHAR"/>
+        <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+        <result property="projectName" column="project_name" jdbcType="VARCHAR"/>
+        <result property="physioId" column="physio_id" jdbcType="INTEGER"/>
+        <result property="physioName" column="physio_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="OrdersMap">
+        select
+          id, uid, total_money, pay_type, flag, create_time, update_time, `no`, project_id, project_name, physio_id, physio_name
+        from orders
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByPage" resultMap="OrdersMap">
+        select
+        id, uid, total_money, pay_type, flag, create_time, update_time, `no`, project_id, project_name, physio_id, physio_name
+        from orders
+        <where>
+            <if test="uid != null">
+                and uid = #{uid}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from orders
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid}
+            </if>
+            <if test="totalMoney != null">
+                and total_money = #{totalMoney}
+            </if>
+            <if test="payType != null">
+                and pay_type = #{payType}
+            </if>
+            <if test="flag != null">
+                and flag = #{flag}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="no != null and no != ''">
+                and `no` = #{no}
+            </if>
+            <if test="projectId != null">
+                and project_id = #{projectId}
+            </if>
+            <if test="projectName != null and projectName != ''">
+                and project_name = #{projectName}
+            </if>
+            <if test="physioId != null">
+                and physio_id = #{physioId}
+            </if>
+            <if test="physioName != null and physioName != ''">
+                and physio_name = #{physioName}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into orders(uid, total_money, pay_type, flag, create_time, update_time, `no`, project_id, project_name, physio_id, physio_name)
+        values (#{uid}, #{totalMoney}, #{payType}, #{flag}, #{createTime}, #{updateTime}, #{no}, #{projectId}, #{projectName}, #{physioId}, #{physioName})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into orders(uid, total_money, pay_type, flag, create_time, update_time, `no`, project_id, project_name, physio_id, physio_name)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.uid}, #{entity.totalMoney}, #{entity.payType}, #{entity.flag}, #{entity.createTime}, #{entity.updateTime}, #{entity.no}, #{entity.projectId}, #{entity.projectName}, #{entity.physioId}, #{entity.physioName})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into orders(uid, total_money, pay_type, flag, create_time, update_time, `no`, project_id, project_name, physio_id, physio_name)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.uid}, #{entity.totalMoney}, #{entity.payType}, #{entity.flag}, #{entity.createTime}, #{entity.updateTime}, #{entity.no}, #{entity.projectId}, #{entity.projectName}, #{entity.physioId}, #{entity.physioName})
+        </foreach>
+        on duplicate key update
+        uid = values(uid),
+        total_money = values(total_money),
+        pay_type = values(pay_type),
+        flag = values(flag),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        `no` = values(no),
+        project_id = values(project_id),
+        project_name = values(project_name),
+        physio_id = values(physio_id),
+        physio_name = values(physio_name)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update orders
+        <set>
+            <if test="uid != null">
+                uid = #{uid},
+            </if>
+            <if test="totalMoney != null">
+                total_money = #{totalMoney},
+            </if>
+            <if test="payType != null">
+                pay_type = #{payType},
+            </if>
+            <if test="flag != null">
+                flag = #{flag},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="no != null and no != ''">
+                `no` = #{no},
+            </if>
+            <if test="projectId != null">
+                project_id = #{projectId},
+            </if>
+            <if test="projectName != null and projectName != ''">
+                project_name = #{projectName},
+            </if>
+            <if test="physioId != null">
+                physio_id = #{physioId},
+            </if>
+            <if test="physioName != null and physioName != ''">
+                physio_name = #{physioName},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from orders where id = #{id}
+    </delete>
+
+</mapper>
+

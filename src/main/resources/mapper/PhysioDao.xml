@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qf.nanqiao.dao.PhysioDao">
+
+    <resultMap type="com.qf.nanqiao.entity.Physio" id="PhysioMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
+        <result property="like" column="like" jdbcType="INTEGER"/>
+        <result property="billCount" column="bill_count" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PhysioMap">
+        select id,
+               nickname,
+               avatar,
+               `state`,
+               `like`,
+               bill_count
+        from physio
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByPage" resultMap="PhysioMap" parameterType="string">
+        select
+        id, nickname, avatar, `state`, `like`, bill_count
+        from physio
+        <where>
+            <if test="nickname != null and nickname != ''">
+                and nickname like concat('%',#{nickname},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from physio
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="nickname != null and nickname != ''">
+                and nickname = #{nickname}
+            </if>
+            <if test="avatar != null and avatar != ''">
+                and avatar = #{avatar}
+            </if>
+            <if test="state != null">
+                and `state` = #{state}
+            </if>
+            <if test="like != null">
+                and `like` = #{like}
+            </if>
+            <if test="billCount != null">
+                and bill_count = #{billCount}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into physio(nickname, avatar, `state`, `like`, bill_count)
+        values (#{nickname}, #{avatar}, #{state}, #{like}, #{billCount})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into physio(nickname, avatar, `state`, `like`, bill_count)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.nickname}, #{entity.avatar}, #{entity.state}, #{entity.like}, #{entity.billCount})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into physio(nickname, avatar, `state`, `like`, bill_count)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.nickname}, #{entity.avatar}, #{entity.state}, #{entity.like}, #{entity.billCount})
+        </foreach>
+        on duplicate key update
+        nickname = values(nickname),
+        avatar = values(avatar),
+        `state` = values(state),
+        `like` = values(like),
+        bill_count = values(bill_count)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update physio
+        <set>
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="avatar != null and avatar != ''">
+                avatar = #{avatar},
+            </if>
+            <if test="state != null">
+                `state` = #{state},
+            </if>
+            <if test="like != null">
+                `like` = #{like},
+            </if>
+            <if test="billCount != null">
+                bill_count = #{billCount},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from physio
+        where id = #{id}
+    </delete>
+
+    <select id="queryByProjectId" parameterType="int" resultMap="PhysioMap">
+        select p.*
+        from physio p
+                 inner join physio_pro pp
+                            on p.id = pp.physio_id
+        where pp.project_id = #{projectId}
+    </select>
+
+</mapper>
+

@@ -1,0 +1,63 @@
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/nanqiao?useSSL=false&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root
+  # redis连接信息
+  redis:
+    host: 192.168.29.110
+    port: 6379
+  application:
+    name: nanqiao
+  mvc:
+    pathmatch:
+      # Springfox使用的路径匹配是基于AntPathMatcher的，而Spring Boot 2.6.X使用的是PathPatternMatcher
+      # 所以需要配置此参数
+      matching-strategy: ant_path_matcher
+# minio配置
+minio:
+  # 访问的url
+  endpoint: http://192.168.29.110
+  # API的端口
+  port: 9001
+  # 秘钥
+  accessKey: VPIAZOcT6kK3l46a
+  secretKey: FlhvXHVL2oPHSRe9tzMGD8bn6YuKeeDW
+  secure: false
+  bucket-name: java2214 # 桶名 我这是给出了一个默认桶名
+  image-size: 104857600 # 我在这里设定了 图片文件的最大大小10M
+  file-size: 1073741824 # 此处是设定了文件的最大大小1G
+# 三方认证配置
+justauth:
+  enabled: true
+  type:
+    GITEE:
+      client-id: a8dc33c538e4de0de22a9ea2ae02893c4062729fd2de6d4025e3bacb9c7459bf
+      client-secret: d3608e22dda5186543210146dd593f3f31f8290aebf09c05a60b6e79dba7fbec
+      redirect-uri: http://127.0.0.1:8080/oauth/callback/gitee
+    BAIDU:
+      client-id: lnDzFsDOZfE1xH7QKd6LYGORREtuWpnC
+      client-secret: ovVj1YPz4oijoNYo2yrUwkiLknEHFjwV
+      redirect-uri: http://127.0.0.1:8080/oauth/callback/baidu
+    GITHUB:
+      client-id: a369e1fa1dbe392142f1
+      client-secret: 2c303c2bcd12b56dad89b954a3cb43527eae9b0f
+      redirect-uri: http://127.0.0.1:8080/oauth/callback/github
+# 腾讯云配置
+tencent:
+  sms:
+    # 腾讯云的密钥
+    secretId: 111111111111
+    # 腾讯云的密钥
+    secretKey: 2222222222222
+    # 短信应用ID
+    sdkAppId: 1400223160
+    # 端木模板ID
+    templateId: 363377
+    # 签名名称
+    signName: 咚咚绘本
+server:
+  port: 8081
+
